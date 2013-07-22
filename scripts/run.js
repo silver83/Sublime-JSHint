@@ -16,6 +16,7 @@
   // The source file to be linted, original source's path and some options.
   var tempPath = argv[2] || "";
   var filePath = argv[3] || "";
+  var projectPath = argv[4] || "";
   var options = Object.create(null);
   var globals = Object.create(null);
 
@@ -66,6 +67,7 @@
   var jshintrc = ".jshintrc";
   var pluginFolder = path.dirname(__dirname);
   var currentFolder = path.dirname(filePath);
+  var projectFolder = path.dirname(projectPath);
   var lastCurrentFolder;
   var jshintrcPath;
 
@@ -77,14 +79,16 @@
   // When a JSHint config file exists in the same directory as the source file,
   // or any directory above it, then use this configuration to overwrite the
   // default prefs.
-  while (currentFolder !== lastCurrentFolder) {
-    lastCurrentFolder = currentFolder;
-    if (fs.existsSync(jshintrcPath = currentFolder + path.sep + jshintrc)) {
+  var possibleLocations = [ currentFolder, path.dirname(currentFolder), projectFolder ];
+
+  for (var i=0; i < possibleLocations.length; i++) {
+  	var possibleLocation = possibleLocations[i];
+  	console.log('testing' + possibleLocation + path.sep + jshintrc);
+    if (fs.existsSync(jshintrcPath = possibleLocation + path.sep + jshintrc)) {
       setOptions(jshintrcPath, options, globals);
+      console.log('set option to path ' + jshintrcPath)
       break; // Stop at the first found JSHint config file.
-    } else {
-      currentFolder = path.dirname(currentFolder);
-    }
+    } 
   }
 
   // Read the source file and, when done, lint the code.

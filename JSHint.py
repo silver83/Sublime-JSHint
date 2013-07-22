@@ -60,7 +60,9 @@ following the instructions at:\n"""
     try:
       print("Plugin folder is: " + PLUGIN_FOLDER)
       scriptPath = PLUGIN_FOLDER + "/scripts/run.js"
-      output = get_output([node, scriptPath, tempPath, filePath or "?"])
+      projectPath = self.view.window().project_file_name()
+      
+      output = get_output([node, scriptPath, tempPath, filePath or "?", projectPath or "?"] )
 
       # Make sure the correct/expected output is retrieved.
       if output.find(OUTPUT_VALID) == -1:
